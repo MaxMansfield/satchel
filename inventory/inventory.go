@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"sync"
-
-	"github.com/sajari/fuzzy"
 )
 
 var (
@@ -17,12 +15,6 @@ var (
 type Stock struct {
 	DB  *sql.DB
 	URL string
-
-	SearchDepth int
-
-	cModel *fuzzy.Model
-	pModel *fuzzy.Model
-	iModel *fuzzy.Model
 }
 
 // GetStock returns an instance of the Stock singleton
@@ -32,11 +24,8 @@ func GetStock(d *sql.DB, u string) (*Stock, error) {
 	var err error
 	once.Do(func() {
 		instance = &Stock{
-			DB:     d,
-			URL:    u,
-			cModel: fuzzy.NewModel(),
-			pModel: fuzzy.NewModel(),
-			iModel: fuzzy.NewModel(),
+			DB:  d,
+			URL: u,
 		}
 
 		// Initialize Tables
@@ -47,7 +36,8 @@ func GetStock(d *sql.DB, u string) (*Stock, error) {
         name text unique
       );
       create table if not exists products(
-        id integer not null primary key ,
+        id integer not null primary key,
+				name text unique not null,
         category_id integer not null,
         price unsigned integer not null,
         foreign key(category_id) references categories(id)
@@ -63,48 +53,9 @@ func GetStock(d *sql.DB, u string) (*Stock, error) {
 			err = fmt.Errorf("%q: %s\n", err, initStmt)
 		}
 
-		// Train Fuzzy Search
-		instance.FullyTrain()
-
 	})
 
 	return instance, err
-}
-
-// FullyTrain trains all the search models with data from the database
-func (s Stock) FullyTrain() error {
-	stmt, err := s.DB.Prepare("SELECT * FROM categories")
-	if err != nil {
-		return err
-	}
-
-	rows, err := stmt.Query()
-	if err != nil {
-		return err
-	}
-
-	var ctrainer []string
-	for rows.Next() {
-		var id int64
-		var n string
-		err = rows.Scan(&id, &n)
-		if err != nil {
-			return err
-		}
-
-		ctrainer = append(ctrainer, n)
-	}
-
-	s.cModel.SetThreshold(1)
-
-	if s.SearchDepth <= 0 {
-		s.SearchDepth = 2
-	}
-
-	s.cModel.SetDepth(s.SearchDepth)
-	s.cModel.Train(ctrainer)
-
-	return nil
 }
 
 // Add calls a Databasers insert function and passes the DB of the Stock

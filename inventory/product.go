@@ -3,7 +3,6 @@ package inventory
 import (
 	"database/sql"
 	"fmt"
-	"strings"
 )
 
 //Product is the model for a set of items
@@ -14,35 +13,21 @@ type Product struct {
 	Category string
 }
 
-func (p Product) validateFields(d *sql.DB) (err error) {
-	p.Name = strings.TrimSpace(p.Name)
-	if p.Name == "" {
-		return fmt.Errorf("The name of a product must be provided")
-	}
+func (p Product) insert(d *sql.DB) (int64, error) {
 
-	stmt, err := d.Prepare(
-		`SELECT * FROM categories WHERE name=?`)
-
-	rows, err := stmt.Query(p.Category)
+	q := `INSERT INTO
+  products (name, category_id, price) values(?,?,?)
+  `
+	rows, err := d.Query("SELECT id FROM categories WHERE name='" + p.Category + "'")
 	if err != nil {
-		return err
+		return -1, err
 	}
 
 	if !rows.Next() {
-		return fmt.Errorf("The '%s' category does not exist")
+		return -1, fmt.Errorf("The '%s' category does not exist", p.Category)
 	}
-
-	return nil
-}
-
-func (p Product) insert(d *sql.DB) (int64, error) {
-	q := `INSERT INTO
-  product (name, category_id, price) values(?,?,?)
-  `
-	row := d.QueryRow("SELECT id FROM categories WHERE name=''" + p.Category + "';")
-
 	cid := 0
-	err := row.Scan(&cid)
+	err = rows.Scan(&cid)
 	if err != nil {
 		return -1, err
 	}

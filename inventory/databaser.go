@@ -8,5 +8,4 @@ type Databaser interface {
 	query(s *sql.Stmt, d *sql.DB) (interface{}, error)
 	delete(d *sql.DB) error
 	update(d *sql.DB) error
-	validateFields(d *sql.DB) error
 }
