@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/MaxMansfield/sqlite3/inventory"
+	"github.com/MaxMansfield/satchel/inventory"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/urfave/cli"
 )
@@ -116,7 +116,7 @@ func main() {
 						pro := inventory.Product{
 							Name:     c.String("name"),
 							Category: c.String("category"),
-							Price:    int64(100 * c.Float64("price")),
+							Price:    uint64(100 * c.Float64("price")),
 						}
 
 						id, err := satchel.Add(pro)

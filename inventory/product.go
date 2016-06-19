@@ -21,8 +21,7 @@ func (p Product) validateFields(d *sql.DB) (err error) {
 	}
 
 	stmt, err := d.Prepare(
-		`SELECT * FROM categories WHERE name=?`
-	)
+		`SELECT * FROM categories WHERE name=?`)
 
 	rows, err := stmt.Query(p.Category)
 	if err != nil {
