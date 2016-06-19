@@ -1,2 +1,9 @@
 # satchel
-An inventory application built with Golang and  SQLite3 
+###### Version: 0.1.0
+###### Build: Pre-Alpha
+An inventory application built with Golang and  SQLite3
+
+
+## Warning!
+This is a VERY new application intended for use at home.
+You probably shouldn't use it
