@@ -163,25 +163,25 @@ func (s Satchel) Run(args []string) error {
 			Name:    "list",
 			Aliases: []string{"l"},
 			Usage:   "List categories, products and items",
-			Action:  s.list,
+			Action:  s.Stock.List,
 			Subcommands: []cli.Command{
 				{
 					Name:    "products",
 					Aliases: []string{"p"},
 					Usage:   "Print a list of products in the inventory",
-					Action:  s.list,
+					Action:  s.Stock.List,
 				}, // Products
 				{
 					Name:    "brands",
 					Aliases: []string{"b"},
 					Usage:   "Print a list of brands in the inventory",
-					Action:  s.listBrands,
+					Action:  s.Stock.ListBrands,
 				}, // Brands
 				{
 					Name:    "category",
 					Aliases: []string{"c"},
 					Usage:   "Print a list of categories in the inventory",
-					Action:  s.list,
+					Action:  s.Stock.List,
 				},
 			}, // Subcommands
 		}, // list
