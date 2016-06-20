@@ -18,7 +18,6 @@ type Brand struct {
 }
 
 func (b Brand) insert(d *sql.DB) (int64, error) {
-
 	b.Name = strings.TrimSpace(b.Name)
 	if b.Name == "" {
 		return -1, fmt.Errorf("The name of a brand cannot be blank")

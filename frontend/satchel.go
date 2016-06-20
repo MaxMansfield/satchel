@@ -2,7 +2,6 @@ package frontend
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"strings"
 	"sync"
@@ -58,10 +57,6 @@ func (s Satchel) Run(args []string) error {
 					},
 					Action: func(c *cli.Context) error {
 						n := properTitle(c.String("name"))
-						if c.NumFlags() < 1 {
-							cli.ShowAppHelp(c)
-							return errors.New("A name must be supplied to add a category")
-						}
 
 						cat := inventory.Category{
 							Name: n,
@@ -69,6 +64,7 @@ func (s Satchel) Run(args []string) error {
 
 						id, err := s.Stock.Add(cat)
 						if err != nil {
+							cli.ShowAppHelp(c)
 							return err
 						}
 
@@ -88,11 +84,6 @@ func (s Satchel) Run(args []string) error {
 						},
 					},
 					Action: func(c *cli.Context) error {
-						if c.NumFlags() < 1 {
-							cli.ShowAppHelp(c)
-							return errors.New("a name must be supplied to add a brand")
-						}
-
 						n := properTitle(c.String("name"))
 						b := inventory.Brand{
 							Name: n,
@@ -100,6 +91,7 @@ func (s Satchel) Run(args []string) error {
 
 						id, err := s.Stock.Add(b)
 						if err != nil {
+							cli.ShowAppHelp(c)
 							return err
 						}
 
@@ -135,10 +127,6 @@ func (s Satchel) Run(args []string) error {
 						n := properTitle(c.String("name"))
 						b := properTitle(c.String("brand"))
 						cat := properTitle(c.String("category"))
-						if cat == "" || n == "" || b == "" || c.NumFlags() == 0 {
-							return fmt.Errorf(
-								`a brand, category and name must be provided to add a product`)
-						}
 
 						pro := inventory.Product{
 							Name:     n,

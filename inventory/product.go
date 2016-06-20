@@ -40,6 +40,11 @@ type Product struct {
 
 func (p Product) insert(d *sql.DB) (int64, error) {
 
+	if p.Category == "" || p.Name == "" || p.Brand == "" {
+		return -1, fmt.Errorf(
+			`a brand, category and name must be provided to add a product`)
+	}
+
 	q := `INSERT INTO
   products (name, price, category_id, brand_id) values(?,?,?,?)
   `
