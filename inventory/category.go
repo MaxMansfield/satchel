@@ -12,9 +12,6 @@ type Category struct {
 	Name string
 }
 
-func (c Category) validateFields(d *sql.DB) (err error) {
-	return err
-}
 func (c Category) insert(d *sql.DB) (int64, error) {
 
 	c.Name = strings.TrimSpace(c.Name)
