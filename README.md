@@ -1,5 +1,5 @@
 # satchel
-###### Version: 0.1.0
+###### Version: 0.1.1
 ###### Build: Pre-Alpha
 An inventory application built with Golang and  SQLite3
 
